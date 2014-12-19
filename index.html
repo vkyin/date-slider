@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link rel="stylesheet" href="css/dateSlider.css" />
+	</head>
+	<body>
+		<div class="date-slider-container" style="width: 600px;">
+			<span class="arrow-right pull-left"></span>
+		    <span class="arrow-left pull-right"></span>
+		    <div class="date-slider" style="width: 900px;left: -50px;">
+		    	<div class="date-slider-year-bar">
+			    	<div class="date-slider-years">
+			    		<span class="date-slider-year" style="width: 18px;"></span>
+			    		<span class="date-slider-year" style="width: 87px;">2012</span>
+			    		<span class="date-slider-year date-slider-year-normal" style="width: 258px;">2013</span>
+			    		<span class="date-slider-year date-slider-year-normal" style="width: 258px;">2013</span>
+			    		<span class="date-slider-year date-slider-year-normal" style="width: 18px;">2014</span>
+			    	</div>
+			    </div>
+			    <div class="date-slider-bar">
+					<span class="draggable date-slider-range" data-role="range" ondragstart="return false;" style="left: calc(10% + 8px); width: 40%;"></span>
+					<span class="draggable date-slider-start" data-role="start" ondragstart="alert()" style="left: 10%;" ondragend="alert()"><span></span></span>
+					<span class="draggable date-slider-end" data-role="end"  style="left: 50%;"><span></span></span>
+				</div>
+			    <div class="date-slider-ruler">
+					<div class="date-slider-scales">
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+						<span class="date-slider-scale"></span>
+					</div>
+					<div class="date-slider-values">
+						<span class="date-slider-value"></span><span class="date-slider-value grey">10</span><span class="date-slider-value">11</span><span class="date-slider-value">12</span><span class="date-slider-value date-slider-scale-selected">1</span><span class="date-slider-value grey">2</span><span class="date-slider-value">3</span><span class="date-slider-value">4</span><span class="date-slider-value date-slider-scale-selected">5</span><span class="date-slider-value grey">6</span><span class="date-slider-value">7</span><span class="date-slider-value">8</span><span class="date-slider-value date-slider-scale-selected">9</span><span class="date-slider-value grey">10</span><span class="date-slider-value">11</span><span class="date-slider-value">12</span><span class="date-slider-value date-slider-scale-selected">1</span><span class="date-slider-value grey">2</span><span class="date-slider-value">3</span><span class="date-slider-value">4</span><span class="date-slider-value date-slider-scale-selected">5</span>
+					</div>
+			    </div>
+		    </div>
+		</div>
+		<div id="dateslider" style="width: 600px;left: 500px;"></div>
+		<script src="js/dateSlider.js"></script>
+		<script>
+			var dateSlider = new DateSlider("dateslider",{
+				"format":"yyyy/mm",
+				"startDate":"2011-06",
+			//	"endDate":"2015-07",
+				"nowDate":"2014-12",
+				"maxSpan":15,
+			});
+		</script>
+	</body>
+</html>

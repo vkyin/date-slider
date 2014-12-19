@@ -1,0 +1,103 @@
+.date-slider-container {
+	position: relative;
+	font-family: Arial "微软雅黑" simsun;
+	display: block;
+	height: 150px;
+	overflow: hidden;
+	padding: 0 10px;
+}
+.date-slider{
+	position: absolute;
+}
+.date-slider-bar {
+	width: 100%;
+	position: relative;
+	background-color: rgb(236, 236, 236);
+	height: 16px;
+	border-radius: 20px;
+	border: 1px solid rgb(219, 219, 219);
+	margin-top: 8px;
+}
+.draggable {
+	display: block;
+	position: absolute;
+	cursor: pointer;
+}
+.date-slider-start,
+.date-slider-end {
+	box-sizing: border-box;
+	width: 16px;
+	height: 16px;
+	border-radius: 50px;
+	border: solid 1px rgb(220, 220, 220);
+	background-color: rgb(250, 250, 250);
+	box-shadow: 0px 0px 9px rgb(129, 165, 171);
+}
+.date-slider-range {
+	background-color: rgb(63, 192, 245);
+	height: 16px;
+}
+.arrow-right,
+.arrow-left {
+	display: block;
+	height: 0;
+	width: 0;
+	position: relative;
+	border: 7px solid rgba(0, 0, 0, 0);
+	bottom: -1px;
+}
+.arrow-right:before,
+.arrow-left:before {
+	content: "";
+	position: absolute;
+	display: block;
+	height: 0;
+	width: 0;
+	top: -5px;
+	border: 5px solid;
+	border-color: rgba(0, 0, 0, 0);
+}
+.arrow-right {
+	border-right-color: grey;
+	border-left-width: 0;
+}
+.arrow-right:before {
+	border-right-color: white;
+	left: -3px;
+}
+.arrow-left {
+	border-left-color: grey;
+	border-right-width: 0;
+}
+.arrow-left:before {
+	border-left-color: white;
+	left: -7px;
+}
+.pull-left:after,
+.pull-right:after {
+	clear: both;
+}
+.pull-left {
+	float: left;
+}
+.pull-right {
+	float: right;
+}
+.date-slider-scales {
+	font-size: 0;
+}
+.date-slider-scale {
+	border-right: 1px solid rgb(219, 219, 219);
+	display: inline-block;
+	height: 5px;
+	width: 30px;
+	box-sizing: border-box;
+}
+.date-slider-value {
+	display: inline-block;
+	width: 30px;
+	text-align: center;
+}
+.date-slider-year {
+	display: inline-block;
+}
