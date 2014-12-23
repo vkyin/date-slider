@@ -55,25 +55,22 @@
 		
 		//事件绑定
 		(function(slider){
-			var startPos;
-			console.log(target)
-			//var containerWidth = target.offsetWidth;
-			//var sliderWidth = slider.offsetWidth;
+			var startPos,referPos;
 			slider.addEventListener("mousedown",function(){
-				//console.log(containerWidth +" "+sliderWidth);
-				startPos=event.x;
-				console.log(startPos);
+				console.log("adf")
+				referPos=event.offsetX;
+				var parentOffset=this.parentElement.offsetLeft;
+				var minLeft = this.parentElement.offsetWidth - this.offsetWidth - 10;
+				var maxLeft = 10;
+				document.onmousemove = function(){
+					var value = event.clientX - referPos - parentOffset;
+					value = value > maxLeft ? maxLeft : value;
+					value = value < minLeft ? minLeft : value;
+					slider.style.left = value  + "px";
+				};
 			});
-			slider.addEventListener("mouseup",function(){
-				var left = parseInt(slider.style.left) || 0;
-				var value = left + event.x-startPos;
-				if(value > 0){
-					value = 0;
-				}else	if(value < target.offsetWidth-slider.offsetWidth){
-					value = target.offsetWidth-slider.offsetWidth;
-				}
-				slider.style.left = value +"px";
-				//console.log(event.x);
+			document.addEventListener("mouseup",function(){
+				document.onmousemove = null;
 			});
 		})(slider);
 
@@ -111,6 +108,7 @@
 			Util.addClass(target,"date-slider-container");
 			target.innerHTML = '<span class="arrow-right pull-left"></span><span class="arrow-left pull-right"></span>';
 			slider = document.createElement("div");
+//			slider.draggable=true;
 			Util.addClass(slider,"date-slider");
 			target.appendChild(slider);
 		}
