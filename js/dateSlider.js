@@ -53,8 +53,10 @@
 		initSliderBar();
 		initMonthRuler();
 		
+		startAnchor
+		
 		//事件绑定
-		(function(slider){
+		/*(function(slider){
 			var startPos,referPos;
 			slider.addEventListener("mousedown",function(){
 				console.log("adf")
@@ -73,7 +75,26 @@
 				document.onmousemove = null;
 			});
 		})(slider);
-
+*/
+		(function(startAnchor){
+			var startPos,referPos;
+			startAnchor.addEventListener("mousedown",function(){
+				console.log("adf")
+				referPos=event.offsetX;
+				var parentOffset=this.parentElement.offsetLeft;
+				var minLeft = this.parentElement.offsetWidth - this.offsetWidth - 10;
+				var maxLeft = 10;
+				document.onmousemove = function(){
+					var value = event.clientX - referPos - parentOffset;
+					value = value > maxLeft ? maxLeft : value;
+					value = value < minLeft ? minLeft : value;
+					startAnchor.style.left = value  + "px";
+				};
+			});
+			document.addEventListener("mouseup",function(){
+				document.onmousemove = null;
+			});
+		})(startAnchor);
 		/**
 		 * 初始化option
 		 * @param {Object} that

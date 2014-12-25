@@ -8,11 +8,7 @@
 }
 .date-slider{
 	position: absolute;
-	cursor: e-resize;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	-webkit-user-select: none;
-	user-select: none;
+	/*cursor: e-resize;*/
 }
 .date-slider-bar {
 	width: 100%;
