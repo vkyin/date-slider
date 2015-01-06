@@ -1,4 +1,5 @@
-//;(function(document,window){
+;(function(document,window){
+	"use strict";
 	var Util = {
 		/**
 		 * 字符串转日期
@@ -38,6 +39,28 @@
 			target.className = target.className.replace(reg,"");
 			target.className = target.className.trim();
 		},
+		/**
+		 * 根据html文本生成DOM节点
+		 */
+		parseDom : function(str){
+			var obj = document.createElement("div");
+			obj.innerHTML = str;
+			return obj.childNodes;
+		},
+		/**
+		 * 将html append到目标节点
+		 * @param arr {String} html
+		 * @param target {Object} 目标节点
+		 */
+		appendHtml : function(target,str){
+			var fragment = document.createDocumentFragment();
+			var arr = this.parseDom(str);
+			console.log(arr)
+			for(var i = 0,len = arr.length;i<len;++i){
+				fragment.appendChild(arr.item(i).cloneNode(true));
+			}
+			target.appendChild(fragment);
+		}
 	};
 	function DateSlider(targetId, option) {
 		this.targetId = targetId;
@@ -46,55 +69,55 @@
 	
 		var _targetId = this.targetId;
 		var _option = this.option;
-		var target,slider,startAnchor,endAnchor,range;
+		var target,slider,anchor1,anchor2,range,sliderBar;
 	
 		initContainer();
 		initYearBar();
 		initSliderBar();
 		initMonthRuler();
 		
-		startAnchor
-		
 		//事件绑定
-		/*(function(slider){
+		document.addEventListener("mouseup",function(){
+			document.onmousemove = null;
+		});
+		(function(sliderBar){
 			var startPos,referPos;
-			slider.addEventListener("mousedown",function(){
-				console.log("adf")
-				referPos=event.offsetX;
-				var parentOffset=this.parentElement.offsetLeft;
-				var minLeft = this.parentElement.offsetWidth - this.offsetWidth - 10;
-				var maxLeft = 10;
+			sliderBar.addEventListener("mousedown",function(e){
+				var e = e || event;
+				var target = e.target || e.srcElement;
+				if(target === this){
+					return;
+				}
+				startPos = target.offsetLeft
+				referPos = e.clientX;
 				document.onmousemove = function(){
-					var value = event.clientX - referPos - parentOffset;
-					value = value > maxLeft ? maxLeft : value;
-					value = value < minLeft ? minLeft : value;
-					slider.style.left = value  + "px";
+					var e = e || event;
+					var value = e.clientX - referPos;
+					var maxLeft;
+					target.style.left = startPos + value + "px";
+					if(target === anchor1 || target === anchor2){
+						setRangePos();
+					}else if(target === range){
+						anchor1.style.left = range.offsetLeft - 8 + "px";
+						anchor2.style.left = range.offsetLeft - 8 + range.offsetWidth + "px";
+					}
 				};
+				return;
 			});
-			document.addEventListener("mouseup",function(){
-				document.onmousemove = null;
+			sliderBar.addEventListener("mouseup",function(e){
+				var sleft = anchor1.offsetLeft;
+				var eleft = anchor2.offsetLeft;
+				anchor1.style.left = sleft - (sleft - 10)%30 +14 + "px";
+				anchor2.style.left = eleft - (eleft - 10)%30 +14 + "px";
+				setRangePos();
 			});
-		})(slider);
-*/
-		(function(startAnchor){
-			var startPos,referPos;
-			startAnchor.addEventListener("mousedown",function(){
-				console.log("adf")
-				referPos=event.offsetX;
-				var parentOffset=this.parentElement.offsetLeft;
-				var minLeft = this.parentElement.offsetWidth - this.offsetWidth - 10;
-				var maxLeft = 10;
-				document.onmousemove = function(){
-					var value = event.clientX - referPos - parentOffset;
-					value = value > maxLeft ? maxLeft : value;
-					value = value < minLeft ? minLeft : value;
-					startAnchor.style.left = value  + "px";
-				};
-			});
-			document.addEventListener("mouseup",function(){
-				document.onmousemove = null;
-			});
-		})(startAnchor);
+		})(sliderBar);
+		function setRangePos(){
+			var left = anchor1.offsetLeft < anchor2.offsetLeft? anchor1.offsetLeft : anchor2.offsetLeft;
+			console.log(left)
+			range.style.left = left + 8 + "px";
+			range.style.width = Math.abs(anchor2.offsetLeft - anchor1.offsetLeft) + "px";
+		}
 		/**
 		 * 初始化option
 		 * @param {Object} that
@@ -127,15 +150,14 @@
 		function initContainer(){
 			target = document.getElementById(_targetId);
 			Util.addClass(target,"date-slider-container");
-			target.innerHTML = '<span class="arrow-right pull-left"></span><span class="arrow-left pull-right"></span>';
+			Util.appendHtml(target,'<span class="arrow-right pull-left"></span><span class="arrow-left pull-right"></span>');
 			slider = document.createElement("div");
-//			slider.draggable=true;
 			Util.addClass(slider,"date-slider");
 			target.appendChild(slider);
 		}
 		
 		/**
-		 * 初始化年份页面展示
+		 * 初始化年份尺子
 		 */
 		function initYearBar() {
 			var html = '<span class="date-slider-year" style="width: 18px;"></span>';
@@ -146,29 +168,29 @@
 					width = 360;
 				}
 			}
-			html += '<span class="date-slider-year" style="width: '+(_option.endDate.getMonth()-1)*30+'px;">'+start+'</span>'
-			html = '<div class="date-slider-year-bar"><div class="date-slider-years">' + html + '</div></div>'
-			slider.innerHTML = html;
+			html += '<span class="date-slider-year" style="width: '+(_option.endDate.getMonth()-1)*30+'px;">'+start+'</span>';
+			html = '<div class="date-slider-year-bar"><div class="date-slider-years">' + html + '</div></div>';
+			Util.appendHtml(slider,html);
 		}
 	
 		/**
 		 * 初始化拖动条
 		 */
 		function initSliderBar() {
-			startAnchor = document.createElement("span");
-			endAnchor = document.createElement("span");
+			anchor1 = document.createElement("span");
+			anchor2 = document.createElement("span");
 			range = document.createElement("span");
-			var sliderBar = document.createElement("div");
-			Util.addClass(startAnchor,"draggable");
-			Util.addClass(startAnchor,"date-slider-start");
-			Util.addClass(endAnchor,"draggable");
-			Util.addClass(endAnchor,"date-slider-end");
+			sliderBar = document.createElement("div");
+			Util.addClass(anchor1,"draggable");
+			Util.addClass(anchor1,"date-slider-anchor");
+			Util.addClass(anchor2,"draggable");
+			Util.addClass(anchor2,"date-slider-anchor");
 			Util.addClass(range,"draggable");
 			Util.addClass(range,"date-slider-range");
 			Util.addClass(sliderBar,"date-slider-bar");
 			sliderBar.appendChild(range);
-			sliderBar.appendChild(startAnchor);
-			sliderBar.appendChild(endAnchor);
+			sliderBar.appendChild(anchor1);
+			sliderBar.appendChild(anchor2);
 			slider.appendChild(sliderBar);
 		}
 	
@@ -191,9 +213,8 @@
 				monthHtml += '<span class="date-slider-value">'+startMonth+'</span>';
 				scale += '<span class="date-slider-scale"></span>';
 			}
-			slider.innerHTML += '<div class="date-slider-ruler"><div class="date-slider-scales">'+scale+'</div><div class="date-slider-values">' +monthHtml+'</div></div>'; 
-			console.log(monthAmount);
-			slider.style.width = monthAmount * 30+ 36+"px";
+			Util.appendHtml(slider,'<div class="date-slider-ruler"><div class="date-slider-scales">'+scale+'</div><div class="date-slider-values">' +monthHtml+'</div></div>');
+			target.style.maxWidth = slider.style.width = monthAmount * 30+ 36+"px";
 		}
 	
 	}
@@ -204,13 +225,5 @@
 		},
 	};
 
-//window.DateSlider = DateSlider;
-//})(document,window);
-
-
-
-
-
-function asdfasdf(e){
-	console.log(event)
-}
+window.DateSlider = DateSlider;
+})(document,window);

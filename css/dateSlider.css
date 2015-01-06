@@ -6,6 +6,11 @@
 	overflow: hidden;
 	padding: 0 10px;
 }
+.date-slider-container *{
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
 .date-slider{
 	position: absolute;
 	/*cursor: e-resize;*/
@@ -24,8 +29,7 @@
 	position: absolute;
 	cursor: pointer;
 }
-.date-slider-start,
-.date-slider-end {
+.date-slider-anchor{
 	box-sizing: border-box;
 	width: 16px;
 	height: 16px;
@@ -46,6 +50,7 @@
 	position: relative;
 	border: 7px solid rgba(0, 0, 0, 0);
 	bottom: -1px;
+	cursor: pointer;
 }
 .arrow-right:before,
 .arrow-left:before {
@@ -61,6 +66,7 @@
 .arrow-right {
 	border-right-color: grey;
 	border-left-width: 0;
+	right: 10px;
 }
 .arrow-right:before {
 	border-right-color: white;
@@ -69,6 +75,7 @@
 .arrow-left {
 	border-left-color: grey;
 	border-right-width: 0;
+	left: 10px;
 }
 .arrow-left:before {
 	border-left-color: white;
