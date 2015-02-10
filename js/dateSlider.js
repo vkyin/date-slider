@@ -62,6 +62,8 @@
 			target.appendChild(fragment);
 		}
 	};
+	
+	var SCALE_WIDTH = 30;
 	function DateSlider(targetId, option) {
 		this.targetId = targetId;
 		this.option;
@@ -96,11 +98,11 @@
 				document.onmousemove = function(){
 					var e = e || event;
 					var value = e.clientX - referPos;
-					var maxWidth = (_option.maxSpan-1) * 30;
+					var maxWidth = (_option.maxSpan-1) * SCALE_WIDTH;
 					var width = Math.abs(anchor2.offsetLeft - anchor1.offsetLeft);
 					var calcLeftValue;
 					if(target === anchor1 || target === anchor2){
-						calcLeftValue = (startPos + value)<20?24:(startPos + value)>898?894:(startPos + value);
+						calcLeftValue = (startPos + value)<18?18:(startPos + value)>(30*SCALE_WIDTH)?(30*SCALE_WIDTH):(startPos + value);
 						if(width>maxWidth){
 							if(target === anchor1){
 								if(anchor2.offsetLeft - anchor1.offsetLeft>0){
@@ -117,7 +119,7 @@
 						target.style.left = calcLeftValue + "px";
 						setRangePos();
 					}else if(target === range){
-						target.style.left = (startPos + value)<20?24:(startPos + value)>(894+12-range.offsetWidth)?(894-range.offsetWidth):(startPos + value) + "px";
+						target.style.left = (startPos + value)<26?26:(startPos + value)>(30*SCALE_WIDTH+8-range.offsetWidth)?(30*SCALE_WIDTH+8-range.offsetWidth):(startPos + value) + "px";
 						anchor1.style.left = range.offsetLeft - 8 + "px";
 						anchor2.style.left = range.offsetLeft - 8 + range.offsetWidth + "px";
 					}
@@ -127,8 +129,8 @@
 			document.addEventListener("mouseup",function(e){
 				var sleft = anchor1.offsetLeft;
 				var eleft = anchor2.offsetLeft;
-				anchor1.style.left = sleft - (sleft - 10)%30 +14 + "px";
-				anchor2.style.left = eleft - (eleft - 10)%30 +14 + "px";
+				anchor1.style.left = sleft - (sleft - 10)%SCALE_WIDTH +SCALE_WIDTH/2 + "px";
+				anchor2.style.left = eleft - (eleft - 10)%SCALE_WIDTH +SCALE_WIDTH/2 + "px";
 				setRangePos();
 			});
 		})(sliderBar);
@@ -149,7 +151,6 @@
 			start.setFullYear(now.getFullYear() - 1);
 			end.setFullYear(now.getFullYear() + 1);
 			that.option = {
-				"format": "yyyy-mm",
 				"startDate": start,
 				"endDate": end,
 				"nowDate": now,
@@ -181,14 +182,14 @@
 		 */
 		function initYearBar() {
 			var html = '<span class="date-slider-year" style="width: 18px;"></span>';
-			var width = (12 - _option.startDate.getMonth())*30;
+			var width = (12 - _option.startDate.getMonth())*SCALE_WIDTH;
 			for(var start = _option.startDate.getFullYear(),end=_option.endDate.getFullYear();start<end;start++){
 				html += '<span class="date-slider-year" style="width: '+width+'px;">'+start+'</span>';
-				if(width!=360){
-					width = 360;
+				if(width!=12*SCALE_WIDTH){
+					width = 12*SCALE_WIDTH;
 				}
 			}
-			html += '<span class="date-slider-year" style="width: '+(_option.endDate.getMonth()-1)*30+'px;">'+start+'</span>';
+			html += '<span class="date-slider-year" style="width: '+(_option.endDate.getMonth()-1)*SCALE_WIDTH+'px;">'+start+'</span>';
 			html = '<div class="date-slider-year-bar"><div class="date-slider-years">' + html + '</div></div>';
 			Util.appendHtml(slider,html);
 		}
@@ -234,7 +235,7 @@
 				scale += '<span class="date-slider-scale"></span>';
 			}
 			Util.appendHtml(slider,'<div class="date-slider-ruler"><div class="date-slider-scales">'+scale+'</div><div class="date-slider-values">' +monthHtml+'</div></div>');
-			target.style.maxWidth = slider.style.width = monthAmount * 30+ 36+"px";
+			target.style.maxWidth = slider.style.width = monthAmount * SCALE_WIDTH+ 36+"px";
 		}
 	}
 	
@@ -244,7 +245,7 @@
 		},
 		getStartTime: function() {
 			var left = this._anchor1.offsetLeft > this._anchor2.offsetLeft?this._anchor2.offsetLeft:this._anchor1.offsetLeft;
-			var monthCount = Math.ceil(left/30);
+			var monthCount = Math.ceil(left/SCALE_WIDTH);
 			var year = this.option.startDate.getFullYear();
 			var month = this.option.startDate.getMonth();
 			for(var i = 0;i<monthCount;++i){
@@ -261,7 +262,7 @@
 		},
 		getEndTime: function() {
 			var left = this._anchor1.offsetLeft < this._anchor2.offsetLeft?this._anchor2.offsetLeft:this._anchor1.offsetLeft;
-			var monthCount = Math.ceil(left/30);
+			var monthCount = Math.ceil(left/SCALE_WIDTH);
 			var year = this.option.startDate.getFullYear();
 			var month = this.option.startDate.getMonth();
 			for(var i = 0;i<monthCount;++i){
@@ -278,5 +279,5 @@
 		}
 	};
 
-window.DateSlider = DateSlider;
+	window.DateSlider = DateSlider;
 })(document,window);
