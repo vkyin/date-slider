@@ -65,10 +65,13 @@
 	function DateSlider(targetId, option) {
 		this.targetId = targetId;
 		this.option;
+		this._anchor1;
+		this._anchor2;
 		initOption(this);
 	
 		var _targetId = this.targetId;
 		var _option = this.option;
+		var _self = this;
 		var target,slider,anchor1,anchor2,range,sliderBar;
 	
 		initContainer();
@@ -93,18 +96,35 @@
 				document.onmousemove = function(){
 					var e = e || event;
 					var value = e.clientX - referPos;
-					var maxLeft;
-					target.style.left = startPos + value + "px";
+					var maxWidth = (_option.maxSpan-1) * 30;
+					var width = Math.abs(anchor2.offsetLeft - anchor1.offsetLeft);
+					var calcLeftValue;
 					if(target === anchor1 || target === anchor2){
+						calcLeftValue = (startPos + value)<20?24:(startPos + value)>898?894:(startPos + value);
+						if(width>maxWidth){
+							if(target === anchor1){
+								if(anchor2.offsetLeft - anchor1.offsetLeft>0){
+									maxWidth *=-1;
+								}
+								anchor2.style.left = calcLeftValue - maxWidth +"px";
+							}else{
+								if(anchor1.offsetLeft - anchor2.offsetLeft>0){
+									maxWidth *=-1;
+								}
+								anchor1.style.left = calcLeftValue - maxWidth +"px";
+							}
+						}
+						target.style.left = calcLeftValue + "px";
 						setRangePos();
 					}else if(target === range){
+						target.style.left = (startPos + value)<20?24:(startPos + value)>(894+12-range.offsetWidth)?(894-range.offsetWidth):(startPos + value) + "px";
 						anchor1.style.left = range.offsetLeft - 8 + "px";
 						anchor2.style.left = range.offsetLeft - 8 + range.offsetWidth + "px";
 					}
 				};
 				return;
 			});
-			sliderBar.addEventListener("mouseup",function(e){
+			document.addEventListener("mouseup",function(e){
 				var sleft = anchor1.offsetLeft;
 				var eleft = anchor2.offsetLeft;
 				anchor1.style.left = sleft - (sleft - 10)%30 +14 + "px";
@@ -114,9 +134,9 @@
 		})(sliderBar);
 		function setRangePos(){
 			var left = anchor1.offsetLeft < anchor2.offsetLeft? anchor1.offsetLeft : anchor2.offsetLeft;
-			console.log(left)
+			var width = Math.abs(anchor2.offsetLeft - anchor1.offsetLeft);
 			range.style.left = left + 8 + "px";
-			range.style.width = Math.abs(anchor2.offsetLeft - anchor1.offsetLeft) + "px";
+			range.style.width = width + "px";
 		}
 		/**
 		 * 初始化option
@@ -161,7 +181,7 @@
 		 */
 		function initYearBar() {
 			var html = '<span class="date-slider-year" style="width: 18px;"></span>';
-			var width = (13 - _option.startDate.getMonth())*30;
+			var width = (12 - _option.startDate.getMonth())*30;
 			for(var start = _option.startDate.getFullYear(),end=_option.endDate.getFullYear();start<end;start++){
 				html += '<span class="date-slider-year" style="width: '+width+'px;">'+start+'</span>';
 				if(width!=360){
@@ -177,8 +197,8 @@
 		 * 初始化拖动条
 		 */
 		function initSliderBar() {
-			anchor1 = document.createElement("span");
-			anchor2 = document.createElement("span");
+			_self._anchor1 = anchor1 = document.createElement("span");
+			_self._anchor2 = anchor2 = document.createElement("span");
 			range = document.createElement("span");
 			sliderBar = document.createElement("div");
 			Util.addClass(anchor1,"draggable");
@@ -200,8 +220,8 @@
 		function initMonthRuler() {
 			var startYear = _option.startDate.getFullYear();
 			var endYear = _option.endDate.getFullYear();
-			var startMonth = _option.startDate.getMonth();
-			var endMonth = _option.endDate.getMonth();
+			var startMonth = _option.startDate.getMonth()+1;
+			var endMonth = _option.endDate.getMonth()+1;
 			var scale = '<span class="date-slider-scale" style="width:18px;"></span>';
 			var monthHtml = '<span class="date-slider-value" style="width:18px;"></span>';
 			var monthAmount = 0;
@@ -216,13 +236,46 @@
 			Util.appendHtml(slider,'<div class="date-slider-ruler"><div class="date-slider-scales">'+scale+'</div><div class="date-slider-values">' +monthHtml+'</div></div>');
 			target.style.maxWidth = slider.style.width = monthAmount * 30+ 36+"px";
 		}
-	
 	}
 	
 	DateSlider.prototype = {
 		getOption: function() {
 			return this.option;
 		},
+		getStartTime: function() {
+			var left = this._anchor1.offsetLeft > this._anchor2.offsetLeft?this._anchor2.offsetLeft:this._anchor1.offsetLeft;
+			var monthCount = Math.ceil(left/30);
+			var year = this.option.startDate.getFullYear();
+			var month = this.option.startDate.getMonth();
+			for(var i = 0;i<monthCount;++i){
+				month++;
+				if(month===13){
+					month = 1;
+					year++;
+				}
+			}
+			if(month<10){
+				month = "0"+month;
+			}
+			return ""+year+month;
+		},
+		getEndTime: function() {
+			var left = this._anchor1.offsetLeft < this._anchor2.offsetLeft?this._anchor2.offsetLeft:this._anchor1.offsetLeft;
+			var monthCount = Math.ceil(left/30);
+			var year = this.option.startDate.getFullYear();
+			var month = this.option.startDate.getMonth();
+			for(var i = 0;i<monthCount;++i){
+				month++;
+				if(month===13){
+					month = 1;
+					year++;
+				}
+			}
+			if(month<10){
+				month = "0"+month;
+			}
+			return ""+year+month;
+		}
 	};
 
 window.DateSlider = DateSlider;
