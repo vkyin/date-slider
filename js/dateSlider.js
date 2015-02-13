@@ -171,7 +171,7 @@
 		function initContainer(){
 			target = document.getElementById(_targetId);
 			Util.addClass(target,"date-slider-container");
-			Util.appendHtml(target,'<span class="arrow-right pull-left"></span><span class="arrow-left pull-right"></span>');
+			//Util.appendHtml(target,'<span class="arrow-right pull-left"></span><span class="arrow-left pull-right"></span>');
 			slider = document.createElement("div");
 			Util.addClass(slider,"date-slider");
 			target.appendChild(slider);
